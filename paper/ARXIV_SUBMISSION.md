@@ -2,15 +2,15 @@
 
 ## 文件准备(已完成)
 
-- `main.tex` 可直接上传(xelatex + xeCJK,UTF-8;已含中文署名);
-- 压缩包不含 `main.pdf` 之外的无用文件:上传前运行
-  `cd paper && rm -f *.aux *.log *.out *.synctex.gz`
+- `main.tex` 可直接上传(纯 ASCII,标准 pdfLaTeX,无特殊字体依赖);
+- 压缩包不含无用文件:上传前运行
+  `cd paper && rm -f ./*.aux ./*.log ./*.out ./*.synctex.gz`
   (arXiv 自动生成 PDF,但带上 main.pdf 做对照也无妨)。
 
 ## 提交流程(arXiv.org → Submit)
 
 1. 登录 → **New Submission**;
-2. **File**: 上传 `main.tex`(选 "PDFLaTeX"... 注意:因为我们用了 xelatex 和 xeCJK,处理器要选 **"XeLaTeX"**;若上传界面只有 PDFLaTeX 选项,则先把 `\usepackage{xeCJK}` 和 `\setCJKmainfont{PingFang SC}` 两行注释掉,用 pdflatex 编译的纯 ASCII 版(作者行 "Junhao Liang (梁竣皓)" 会需要去掉中文) —— 优先试 XeLaTeX 处理器,arXiv 支持);
+2. **File**: 上传 `main.tex`,处理器选 **"PDFLaTeX"**;
 3. **Metadata**:
    - Title: *The Krenn–Gu conjecture holds for all simple graphs on six vertices*
    - Authors: Junhao Liang (primary name); 可在 Comments 写 "梁竣皓";
@@ -23,8 +23,7 @@
 
 ## 署名格式说明(arXiv 元数据)
 
-- 元数据姓名填 **"Junhao Liang"**(纯 ASCII,国际索引友好);
-- 中文名出现在:论文 PDF 首页(已含)、Comments 栏、ORCID 档案。
+- 元数据姓名填 **"Junhao Liang"**(与 PDF 一致);中文名 梁竣皓 可放在 Comments 栏与 ORCID 档案。
 
 ## 时间线建议
 
