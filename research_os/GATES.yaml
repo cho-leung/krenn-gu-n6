@@ -1,0 +1,63 @@
+# Gates — KG-P0 frontier reconstruction. Verified 2026-08-27.
+
+gates:
+  KG-0:
+    title: "Exact specification"
+    status: COMPLETE
+    summary: >
+      Frozen from arXiv:1902.06023 (Def. 2.1–2.3) and the OPG statement:
+      loopless multigraphs on even n ≥ 4; d ≥ 2 colors; complex edge weights;
+      ordered color pair per edge (monochromatic vs bichromatic);
+      IVC induced by perfect matchings; w(c)=Σ_{PM:IVC=c}Πw_e; unit/cancel.
+      Conjecture: no monochromatic graph for even n ≥ 6, d ≥ 3
+      (μ(G) ≤ 2 for |V| > 4; μ(K₄)=3). Restriction matrix in
+      RESEARCH_STATE.md §1.
+    evidence: "sources/SOURCE_INDEX.md #1,#2,#8; CLAIM_LEDGER CL-015"
+
+  KG-1:
+    title: "2026 literature frontier"
+    status: COMPLETE
+    summary: >
+      Reconstructed: 1902.06023 (CroCoDays 2019) → 2202.05562 (EJC 2026) →
+      2109.13273 (Quantum 2022) → 2304.06407 (Quantum 2024) → 2407.00303
+      (MFCS 2024) → 2605.22763 + Lean repos (2026) → 2605.04855 (2026).
+      No resolution; prize unclaimed. All claims classified in
+      CLAIM_LEDGER.yaml.
+    evidence: "CLAIM_LEDGER CL-001..CL-017"
+
+  KG-2:
+    title: "AI/computational claims audit"
+    status: COMPLETE
+    summary: >
+      Separated the four layers for every computational claim. No LRAT/DRAT
+      certificates exist for any frontier claim. AlphaProof Nexus results are
+      machine-checked Lean but cover only D=N (+ fixed cases); blog phrase
+      'd≥n' is looser than the formal theorems (CL-012). 'General D ≤ N−2'
+      does not exist (Ravsky's is mono-edge/simple; refuted in general by K₄).
+      Vardi–Zhang SAT work is misattributed for the n=6/8 dimension results
+      (CL-014). Mantey Gröbner never independently re-run (CL-002).
+      Tensor no-go paper unpublished (CL-013).
+    evidence: "CLAIM_LEDGER CL-002,CL-010..CL-014"
+
+  KG-3:
+    title: "Minimal-counterexample frontier"
+    status: COMPLETE
+    summary: >
+      Minimal counterexample must be 4-connected with Δ ≥ 4, complex-weight
+      cancellation, bichromatic edges or multiedges. Smallest open instance:
+      (n=6, d=3) over ℂ — NOT a proven reduction. Dependency graph in
+      RESEARCH_STATE.md §3.
+    evidence: "RESEARCH_STATE.md §3; CLAIM_LEDGER CL-003..CL-006,CL-008"
+
+  KG-4:
+    title: "Attack maps"
+    status: COMPLETE
+    summary: >
+      Proof side: structural (κ reductions, degree discharging),
+      matching-covered/brick decomposition, Bogdanov-positivization,
+      tensor-algebraic no-go, Gröbner elimination, Lean formalization.
+      Counterexample side: (6,3) SMT/Gröbner over skeleton candidates,
+      trinary-ℤ/roots-of-unity first pass, symmetry reduction, exact witness
+      verification, machine-checkable certificates. Registry in
+      APPROACH_REGISTRY.yaml (A-001..A-011, tombstones preserved).
+    evidence: "APPROACH_REGISTRY.yaml"

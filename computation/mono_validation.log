@@ -1,0 +1,14 @@
+mono scan 500000/14348907 survivors=1984 t=0s
+mono scan 10500000/14348907 survivors=159317 t=7s
+mono scan done: rows=14348907 survivors=211590 t=10s; deciding...
+mono decide 20000/211590 feasible=0 t=10s
+mono decide 40000/211590 feasible=0 t=11s
+mono decide 60000/211590 feasible=0 t=11s
+mono decide 80000/211590 feasible=0 t=11s
+mono decide 100000/211590 feasible=0 t=11s
+mono decide 120000/211590 feasible=0 t=11s
+mono decide 140000/211590 feasible=0 t=12s
+mono decide 160000/211590 feasible=0 t=12s
+mono decide 180000/211590 feasible=0 t=12s
+mono decide 200000/211590 feasible=0 t=12s
+mono done: rows=14348907 survivors=211590 feasible=0 t=12s

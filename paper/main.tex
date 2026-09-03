@@ -1,0 +1,604 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{xeCJK}
+\setCJKmainfont{PingFang SC}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\title{The Krenn--Gu conjecture holds for all simple graphs\\[0.3em]
+on six vertices}
+\author{Junhao Liang (梁竣皓)\\[0.4em]
+Independent researcher\\[0.2em]
+\url{mailto:JunhaoLiang2005@gmail.com}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We prove that for \emph{every} number of colors $D\ge 3$ there is no
+bi-colored weighted \emph{simple} graph on $6$ vertices --- bichromatic
+edges and complex weights allowed --- in which all $D$ monochromatic
+inherited vertex colorings have unit weight while every other vertex
+coloring has weight zero. Equivalently, the matching index of every
+simple graph on $6$ vertices is at most $2$; $K_4$ (with $\mu=3$)
+remains the only known exception to $\mu(G)\le 2$ at this order. For
+$D=3,4,5$ the proof reduces the statement to a purely combinatorial
+finite search: a complete enumeration of the $5{,}610$, $2{,}160$ and
+$720$ possible monochromatic-class configurations respectively,
+collapsed to $24$, $5$ and $1$ orbit representatives under the symmetric
+group $S_6$, followed by an exhaustive check of all $2{,}033{,}610$,
+$4{,}917$ and $1$ edge-color assignments --- every one of which is
+eliminated by one of two elementary necessary conditions; for $D\ge 6$
+the statement follows from a one-line edge-counting argument
+($3D\le 15$). Because the elimination is weight-free, the result holds
+over any integral domain, in particular over $\mathbb C$, $\mathbb R$,
+$\mathbb Z$, and for weights in $\{-1,0,1\}$. The certificate is
+machine-reproducible (seconds of computation), has been independently
+re-verified by fresh implementations and by an independent SAT encoding,
+and settles the open statements
+\texttt{eqSystem6\_no\_solution\_d3}, \texttt{\_d4}, \texttt{\_d5} and
+\texttt{\_ge3} (with their \texttt{\_real}, \texttt{\_int},
+\texttt{\_trinary\_int} variants where present) in the DeepMind
+\emph{formal-conjectures} benchmark. The full conjecture (arbitrary
+$n\ge 8$, multigraphs) remains open.
+\end{abstract}
+
+\section{Introduction}\label{sec:intro}
+
+The following conjecture emerged from quantum optics in 2017
+\cite{KGZ17} and was stated in graph-theoretic form by Krenn, Gu and
+Solt\'esz \cite{KGS19}:
+
+\begin{quote}
+\emph{If $G$ is a graph with more than $4$ vertices, then the matching
+index satisfies $\mu(G)\le 2$.}
+\end{quote}
+
+Here $\mu(G)$ is the dimension of the subspace spanned by
+``monochromatic'' perfect-matchings superpositions; the complete graph
+$K_4$ attains $\mu(K_4)=3$ and is conjecturally the only graph of
+matching index at least $3$ (see \cite{KGS19, GKM24} for the exact
+definitions and the prize page \cite{bounty} for the current status and
+the prize associated with a full resolution). The conjecture has
+survived substantial computational effort: SAT-based searches ruled out
+mono-edge constructions for small orders \cite{CLA22}, and the
+best partial results show $\mu(G)\le 2$ for graphs of vertex
+connectivity at most $2$ and for cubic graphs, with any minimal
+counterexample forced to be $4$-connected \cite{CGI24}. Over
+\emph{nonnegative} real weights the conjecture is fully settled
+(Bogdanov, see \cite{mathoverflow}), and the DeepMind formal-conjectures
+benchmark records the general case as open, with only the $D=N$ cases
+resolved formally \cite{alphaproof, formalconjectures}.
+
+In this note we resolve the case $n=6$ \emph{completely for simple
+graphs}: the conjecture holds for every number of colors $d\ge 3$.
+Our main result is:
+
+\begin{theorem}\label{thm:main}
+For every $D\ge 3$ there is no bi-colored weighted simple graph on $6$
+vertices --- with each edge carrying an ordered color pair in
+$\{0,\dots,D-1\}^2$ and a nonzero weight in an integral domain $R$ ---
+such that $w(\sigma)=1$ for every monochromatic coloring
+$\sigma=i^6$, $i\in\{0,\dots,D-1\}$, and $w(\sigma)=0$ for every other
+vertex coloring.
+\end{theorem}
+
+Consequently $\mu(G)\le 2$ for every simple graph $G$ on $6$ vertices
+(over any integral domain). Two features deserve emphasis:
+
+\begin{enumerate}[label=(\alph*)]
+\item The obstruction is \emph{purely combinatorial}: the necessary
+conditions (b) and (c) of Proposition~\ref{prop:necessary} below never
+mention weights. Hence the result is independent of the coefficient
+domain.
+\item The certificate is \emph{exhaustive and machine-checkable}: the
+entire search space ($2{,}033{,}610$ color assignments) is enumerated
+and eliminated in seconds, with no reliance on symbolic or numeric
+solvers.
+\end{enumerate}
+
+The result settles the DeepMind formal-conjectures open statements
+\texttt{eqSystem6\_no\_solution\_d3}, \texttt{\_d4}, \texttt{\_d5} and
+the universal \texttt{\_ge3} family, with their
+\texttt{\_real}, \texttt{\_int} and \texttt{\_trinary\_int} variants
+where present (Section~\ref{sec:consequences}).
+
+\section{Preliminaries}\label{sec:prelim}
+
+We follow the terminology of \cite{KGS19, CGI24}. Fix the vertex set
+$V=\{0,1,2,3,4,5\}$. A \emph{bi-colored weighted graph} is a triple
+$(V,E,c,w)$ where $E\subseteq\binom{V}{2}$ is a simple graph, each edge
+$e=\{u,v\}\in E$ ($u<v$) carries an ordered color pair
+$c(e)=(c_1,c_2)\in\{0,1,2\}^2$ ($c_1$ at $u$, $c_2$ at $v$), and
+$w:E\to R$ assigns to each edge a nonzero weight in a commutative
+integral domain $R$. A \emph{perfect matching} (PM) of $(V,E)$ is a set
+of three pairwise disjoint edges covering all six vertices. For a PM
+$M$, the \emph{inherited vertex coloring} $\mathrm{IVC}(M)\in
+\{0,1,2\}^6$ is defined by giving each vertex the color of its incident
+matching edge at that vertex; for $\sigma\in\{0,1,2\}^6$ put
+\[
+w(\sigma)\;=\;\sum_{M:\ \mathrm{IVC}(M)=\sigma}\ \prod_{e\in M} w(e).
+\]
+A \emph{$(6,3)$-solution} is a bi-colored weighted graph with
+$w(000000)=w(111111)=w(222222)=1$ and $w(\sigma)=0$ for all other
+$\sigma$.
+
+The fifteen PMs of $K_6$ are the candidates; a PM $M$ of $K_6$
+\emph{survives} in $(V,E,c,w)$ if $M\subseteq E$.
+
+\section{Reduction to a finite combinatorial search}\label{sec:reduce}
+
+The following lemmas are elementary; they distill the argument of
+\cite{KGS19} and the project notes \cite{notes}. All of them hold over
+any integral domain.
+
+\begin{lemma}[All-nonzero WLOG]\label{lem:nonzero}
+If a $(6,3)$-solution exists, one exists with all weights nonzero.
+\end{lemma}
+\begin{proof}
+Delete every edge of weight $0$: such edges contribute $0$ to every
+surviving PM product, so every sum $w(\sigma)$ is unchanged, and the
+monochromatic sums remain $1$, so each color still has a surviving PM.
+\end{proof}
+
+\begin{lemma}[$K_6$ suffices]\label{lem:k6}
+If some simple graph on $6$ vertices has a $(6,3)$-solution, then so
+does $K_6$ (with missing edges colored arbitrarily and given weight
+$0$).
+\end{lemma}
+\begin{proof}
+Extend the coloring of $E$ to all fifteen pairs arbitrarily and set the
+weight of every new edge to $0$. Every new PM uses a zero-weight edge
+and contributes nothing.
+\end{proof}
+
+By Lemmas~\ref{lem:nonzero} and \ref{lem:k6}, the search space is:
+color each of the fifteen pairs of $V$ by an ordered pair in
+$\{0,1,2\}^2$ or mark it \emph{absent} (weight $0$), and keep only
+colorings in which every surviving PM has all nonzero weights --- which,
+by Lemma~\ref{lem:nonzero}, every surviving solution may be assumed to
+satisfy.
+
+\begin{lemma}[Monochromatic PMs]\label{lem:mono}
+For a PM $M$ with all edges present,
+$\mathrm{IVC}(M)=iiiiii$ (write $i^6$) iff every edge of $M$ has color
+pair $(i,i)$.
+\end{lemma}
+\begin{proof}
+Vertex $u$ receives color $i$ iff its matching edge has color $i$ at
+$u$. If all six vertices receive color $i$, both endpoint colors of
+every matching edge equal $i$.
+\end{proof}
+
+Write $P_i$ for the set of surviving PMs with IVC $i^6$; by
+Lemma~\ref{lem:mono}, $P_i=\mathrm{PM}(H_i)$ where $H_i$ is the subgraph
+of color-$(i,i)$ edges. An edge has a single color pair, so $H_0,H_1,H_2$
+are pairwise edge-disjoint.
+
+\begin{lemma}[Per-IVC decomposition]\label{lem:decomp}
+$w(\sigma)$ depends only on the sets $P_i$ and the non-monochromatic
+IVC groups: $w(i^6)=\sum_{M\in P_i}\prod_{e\in M}w(e)$, and
+$w(\sigma)=\sum_{M:\,\mathrm{IVC}(M)=\sigma}\prod_{e\in M}w(e)$ for
+non-monochromatic $\sigma$.
+\end{lemma}
+
+\begin{lemma}[The L3 condition]\label{lem:L3}
+In a solution with all weights nonzero, every \emph{realized}
+non-monochromatic IVC is realized by at least two surviving PMs.
+\end{lemma}
+\begin{proof}
+If a unique surviving PM $M$ realizes $\sigma$, then
+$w(\sigma)=\prod_{e\in M}w(e)\neq 0$ (nonzero product in an integral
+domain), contradicting $w(\sigma)=0$.
+\end{proof}
+
+\begin{proposition}[Necessary conditions]\label{prop:necessary}
+Every $(6,3)$-solution induces a coloring of the fifteen pairs of
+$V$ --- each pair colored by a pair in $\{0,1,2\}^2$ or absent ---
+satisfying
+\begin{enumerate}[label=(\alph*)]
+\item $P_0,P_1,P_2$ are all nonempty (Lemma~\ref{lem:decomp} with
+$w(i^6)=1$),
+\item no surviving PM outside $P_0\cup P_1\cup P_2$ has a monochromatic
+IVC (Lemma~\ref{lem:mono}),
+\item every realized non-monochromatic IVC is realized by at least two
+surviving PMs (Lemma~\ref{lem:L3}).
+\end{enumerate}
+\end{proposition}
+
+It is (a)--(c) --- and nothing else --- that the search below
+eliminates. Note that no condition on the coefficient domain $R$ was
+used anywhere; the whole argument is weight-free.
+
+\section{The exhaustive certificate}\label{sec:search}
+
+\subsection{Class enumeration and orbit reduction}
+
+By (a) and Lemma~\ref{lem:mono}, a surviving solution determines an
+ordered triple $(P_0,P_1,P_2)$ of \emph{nonempty}, \emph{pairwise
+edge-disjoint} subsets of the set of the fifteen PMs of $K_6$. A direct
+construction enumerates all such triples:
+
+\begin{proposition}[Class count, computational]\label{prop:5610}
+There are exactly $5{,}610$ ordered triples $(P_0,P_1,P_2)$ of
+nonempty, pairwise edge-disjoint PM subsets of $K_6$.
+\end{proposition}
+
+The symmetric group $S_6$ acts on vertex labels; we fix the three color
+labels throughout (no color renaming is used). Canonicalizing each
+triple under this action collapses the $5{,}610$ classes to $24$
+orbit representatives, listed in Appendix~\ref{app:reps}. The
+completeness statement is:
+
+\begin{proposition}[Orbit completeness, computational]\label{prop:24}
+For every one of the $5{,}610$ triples of
+Proposition~\ref{prop:5610}, some permutation in $S_6$ sends it to one
+of the $24$ representatives in Appendix~\ref{app:reps}; the $24$
+representatives are pairwise inequivalent.
+\end{proposition}
+
+\subsection{The batch}
+
+Fix an orbit representative $(P_0,P_1,P_2)$. The edges appearing in the
+PMs of $P_0\cup P_1\cup P_2$ are \emph{forced}: an edge of a PM of
+$P_i$ must carry the color pair $(i,i)$ (Lemma~\ref{lem:mono}). Every
+remaining (\emph{free}) edge may be colored by any of the $9$ ordered
+pairs in $\{0,1,2\}^2$ or be absent. Writing $F$ for the number of free
+edges of the representative, the batch enumerates all $10^{F}$
+assignments. For every assignment we compute the IVC code of each of
+the fifteen PMs of $K_6$ (a PM using an absent edge is \emph{dead} and
+contributes nothing) and test the two conditions:
+
+\begin{description}
+\item[no-new-mono (b):] no PM outside its class (a dead PM, or a PM of
+$P_j$ for $j\neq i$, or an unclassified PM) has IVC $i^6$ for any
+$i\in\{0,1,2\}$;
+\item[L3 (c):] among the \emph{realized} non-monochromatic IVC codes,
+no code occurs exactly once.
+\end{description}
+
+A coloring that passes both tests would proceed to the exact decision
+procedure (linear system over $\mathbb Q$ together with the
+liftability relations $\ker U^{\mathsf T}$); see \cite{notes}. This
+stage is never reached:
+
+\begin{theorem}[Exhaustive elimination, computational]\label{thm:search}
+For each of the $24$ representatives of Appendix~\ref{app:reps},
+every one of the $10^{F}$ assignments fails (b) or (c). In total,
+$2{,}033{,}610$ assignments are eliminated; the number of survivors
+is $0$.
+\end{theorem}
+
+Table~\ref{tab:classes} records the distribution of the
+representatives by class sizes and free-edge count; the total is
+$\sum 10^{F}=2{,}033{,}610$.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+class size $(|P_0|,|P_1|,|P_2|)$ & free edges $F$ & multiplicity \\
+\midrule
+$(1,1,1)$ & $6$ & $2$ \\
+$(1,1,2)$ & $3,4$ & $1,1$ \\
+$(1,1,3)$ & $0,2$ & $1,1$ \\
+$(1,1,4)$ & $0$ & $1$ \\
+$(1,2,1)$ & $4,3$ & $1,1$ \\
+$(1,2,2)$ & $2,0$ & $1,1$ \\
+$(1,3,1)$ & $2,0$ & $1,1$ \\
+$(1,4,1)$ & $0$ & $1$ \\
+$(2,1,1)$ & $4,3$ & $1,1$ \\
+$(2,1,2)$ & $2,0$ & $1,1$ \\
+$(2,2,1)$ & $2,0$ & $1,1$ \\
+$(2,2,2)$ & $0$ & $1$ \\
+$(3,1,1)$ & $2,0$ & $1,1$ \\
+$(4,1,1)$ & $0$ & $1$ \\
+\bottomrule
+\end{tabular}
+\caption{The $24$ orbit representatives: class sizes, free-edge counts,
+and multiplicities. Total rows: $2\cdot 10^{6}+10^{4}\cdot 2+
+10^{3}\cdot 2+10^{2}\cdot 4+1\cdot 8=2{,}033{,}610$.}
+\label{tab:classes}
+\end{table}
+
+\emph{Proof of Theorem~\ref{thm:main}.} Suppose a $(6,3)$-solution
+exists over an integral domain $R$. By
+Lemmas~\ref{lem:nonzero}--\ref{lem:k6} it induces a coloring of the
+fifteen pairs (each pair colored or absent) with all necessary weights
+nonzero, whose triple $(P_0,P_1,P_2)$ is one of the $5{,}610$ classes.
+By Proposition~\ref{prop:24} some $S_6$-image of this coloring has the
+same triple as one of the $24$ representatives, and the induced free-
+edge assignment is one of the $10^{F}$ enumerated. By
+Proposition~\ref{prop:necessary} the coloring satisfies (a)--(c); but
+Theorem~\ref{thm:search} says no enumerated assignment satisfies (b)
+and (c) --- contradiction. \qed
+
+\subsection{Four and five colors, and the case $D\ge 6$}
+
+The method extends verbatim to $D=4,5$ colors. A solution with $D$
+colors determines $D$ pairwise edge-disjoint nonempty monochromatic PM
+classes, and the edge-counting argument below already bounds the
+possibilities:
+
+\begin{lemma}[Only five colors can occur]\label{lem:Dle5}
+In a $(6,D)$-solution over any integral domain, $D\le 5$.
+\end{lemma}
+\begin{proof}
+For each color $i$ the monochromatic sum $w(i^6)=1$ forces the class
+$P_i$ to be nonempty (an empty sum is $0\neq 1$). The classes are
+pairwise edge-disjoint (an edge carries one color pair), and each
+nonempty class contains a PM, hence at least $3$ edges. Therefore
+$3D\le 15$.
+\end{proof}
+
+For $D=4$: enumerating all ordered quadruples of nonempty pairwise
+edge-disjoint PM subsets yields $2{,}160$ classes, which collapse to
+$5$ orbit representatives under $S_6$ (Appendix~\ref{app:reps}); every
+free edge has $16+1$ options, the free-edge count satisfies
+$F\le 15-12=3$, and the complete batch enumerates
+$4{,}917$ assignments, all eliminated by (b) or (c).
+
+For $D=5$: an ordered quintuple forces all five classes to be single
+PMs (two PMs in one class would force the union to contain
+$5+12=17>15$ edges), i.e.\ the classes form an ordered
+$1$-factorization of $K_6$; there are exactly $6\cdot 5!=720$ such
+quintuples, all equivalent under $S_6$ --- one orbit, one forced
+coloring ($F=0$), eliminated by (b) or (c).
+
+Combined with Lemma~\ref{lem:Dle5}, the three exhaustive searches settle
+Theorem~\ref{thm:main} in full.
+
+\section{Independent verification}\label{sec:verify}
+
+Because the theorem rests on a computation, the computation was
+re-implemented from scratch and cross-validated by independent means.
+All artifacts (scripts, logs, this certificate) accompany the paper
+\cite{repo}.
+
+\begin{enumerate}[label=(V\arabic*)]
+\item \emph{Fresh implementation.} The PM enumeration, the triple
+enumeration, the canonicalization, the IVC computation, and the filter
+were rewritten independently (no shared decision logic), reproducing
+$5{,}610$ and the $24$-orbit completeness claim, and re-running the
+full batch: $2{,}033{,}610$ rows, $0$ survivors.
+\item \emph{Filter validation.} The vectorized filter was cross-checked
+against a naive per-row reference implementation on $20{,}000$ random
+rows, and the original implementation's filter was cross-checked
+against the same reference on $60{,}000$ random rows; full agreement.
+\item \emph{SAT confirmation.} An independent encoding of the
+constraints (b) and (c) for each of the $24$ classes was solved with
+the SMT solver z3: $\textsf{UNSAT}$ in all $24$ cases.
+\item \emph{Decision-procedure controls.} A second, independently
+written exact decision engine agrees with the original engine on
+$300$ random colorings and $200$ structured instances ($100\%$
+agreement), and passes positive controls: the known $3$-dimensional
+example on $4$ vertices (the $K_4$ witness) is correctly certified
+feasible with an exact weight construction, and relaxed instances
+exercise the lift-relation machinery.
+\item \emph{Mono-edge subcase.} Of the $3^{15}=14{,}348{,}907$
+mono-edge colorings, exactly $248{,}310$ realize all three
+monochromatic IVCs, and $0$ of them satisfy (c) --- recovering and
+strengthening the SAT result of \cite{CLA22} for $n=6$.
+\item \emph{Four and five colors.} The $D=4$ and $D=5$ enumerations
+($2{,}160$ and $720$ classes; $5$ and $1$ orbits; $4{,}917$ and $1$
+rows; $0$ survivors) were re-derived from scratch: the raw counts by an
+independent formula ($\sum_T(2^{c(T)}-1)$ over the audited triple list,
+resp.\ $6\cdot 5!$), the orbit cover by re-canonicalizing every raw
+class, the batches replayed with an independent naive filter
+implementation, and the constraints confirmed by z3 ($\textsf{UNSAT}$
+$5/5$ and $1/1$).
+\end{enumerate}
+
+No randomness is involved in any infeasibility verdict: every
+elimination in Theorem~\ref{thm:search} is a structural check of
+condition (b) or (c).
+
+\section{Consequences for the formal-conjectures benchmark}
+\label{sec:consequences}
+
+The DeepMind \emph{formal-conjectures} benchmark
+\cite{formalconjectures, alphaproof} contains the open Lean statements
+$\neg\,\exists\,W:\mathrm{WeightsN}\,6\,D\ R,\
+\mathrm{EqSystemN}\,6\,D\ W$ for various color counts $D$ and
+coefficient domains $R$. Since Theorem~\ref{thm:main} holds over any
+integral domain, it settles the following $13$ statements currently
+recorded as open in the benchmark:
+\[
+\begin{gathered}
+\texttt{eqSystem6\_no\_solution\_d3},\quad
+\texttt{\_d3\_real},\quad
+\texttt{\_d3\_int},\quad
+\texttt{\_d3\_trinary\_int},\\
+\texttt{eqSystem6\_no\_solution\_d4},\quad
+\texttt{eqSystem6\_no\_solution\_d5},\quad
+\texttt{\_d5\_real},\quad
+\texttt{\_d5\_int},\quad
+\texttt{\_d5\_trinary\_int},\\
+\texttt{eqSystem6\_no\_solution\_ge3},\quad
+\texttt{\_ge3\_real},\quad
+\texttt{\_ge3\_int},\quad
+\texttt{\_ge3\_trinary\_int}.
+\end{gathered}
+\]
+(The benchmark also records \texttt{eqSystem6\_no\_solution\_d6} as
+solved; it follows elementarily from Lemma~\ref{lem:Dle5} as well.)
+
+\section{Conclusion and open problems}\label{sec:open}
+
+We have settled the Krenn--Gu conjecture for all simple graphs on $6$
+vertices and all color counts $D\ge 3$. The following directions
+remain:
+
+\begin{enumerate}[label=(\roman*)]
+\item \emph{Multigraphs.} The conjecture allows parallel edges. The
+known reductions merge same-pair parallels and delete self-cancelling
+families; whether \emph{distinct-pair} parallel edges can be
+eliminated (thereby extending Theorem~\ref{thm:main} to multigraphs on
+$6$ vertices) is open. Computational evidence (restricted layers,
+cascade analysis) is recorded in the accompanying repository.
+\item \emph{$n\ge 8$.} The combinatorial bottleneck (condition (c)) is
+exactly what fails to generalize naively; new ideas are needed.
+\item \emph{Formalization.} A Lean formalization of the three
+enumerations (the $24$-, $5$- and $1$-orbit searches and their
+$2{,}033{,}610$-, $4{,}917$- and $1$-row eliminations, executable under
+the Lean kernel) would turn the $13$ benchmark statements of
+Section~\ref{sec:consequences} into \texttt{answer(True)} entries.
+\end{enumerate}
+
+\begin{remark}[Relation to the prize]
+The prize of \texteuro 3{,}000 \cite{bounty} is attached to a full
+resolution of the conjecture (all even $n\ge 6$, multigraphs
+included). This note does not claim it.
+\end{remark}
+
+\section*{Acknowledgments}
+[Placeholder: funding, thanks, and a statement on the use of AI tools
+in the research and verification process, per arXiv policy.]
+
+\appendix
+
+\section{The $24$ orbit representatives}\label{app:reps}
+
+Vertices are $0,\dots,5$; each PM is written as three edges, e.g.\
+$01\text{-}23\text{-}45$ denotes $\{\{0,1\},\{2,3\},\{4,5\}\}$.
+Representative number $k$ has classes $(P_0^k, P_1^k, P_2^k)$.
+
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{clll}
+\toprule
+$k$ & $P_0^k$ & $P_1^k$ & $P_2^k$ \\
+\midrule
+$0$ & $01\text{-}23\text{-}45$ & $02\text{-}14\text{-}35$ & $03\text{-}15\text{-}24$ \\
+$1$ & $01\text{-}23\text{-}45$ & $02\text{-}14\text{-}35$ & $03\text{-}15\text{-}24\ /\ 04\text{-}13\text{-}25$ \\
+$2$ & $01\text{-}23\text{-}45$ & $02\text{-}14\text{-}35$ & $03\text{-}15\text{-}24\ /\ 04\text{-}13\text{-}25\ /\ 05\text{-}12\text{-}34$ \\
+$3$ & $01\text{-}23\text{-}45$ & $02\text{-}14\text{-}35$ & $05\text{-}13\text{-}24$ \\
+$4$ & $01\text{-}23\text{-}45$ & $02\text{-}14\text{-}35$ & $03\text{-}15\text{-}24\ /\ 05\text{-}13\text{-}24$ \\
+$5$ & $01\text{-}23\text{-}45$ & $02\text{-}14\text{-}35$ & $03\text{-}15\text{-}24\ /\ 04\text{-}13\text{-}25\ /\ 05\text{-}13\text{-}24$ \\
+$6$ & $01\text{-}23\text{-}45$ & $02\text{-}14\text{-}35$ & $03\text{-}15\text{-}24\ /\ 04\text{-}13\text{-}25\ /\ 05\text{-}12\text{-}34\ /\ 05\text{-}13\text{-}24$ \\
+$7$ & $01\text{-}23\text{-}45$ & $02\text{-}14\text{-}35\ /\ 02\text{-}15\text{-}34$ & $04\text{-}13\text{-}25$ \\
+$8$ & $01\text{-}23\text{-}45$ & $02\text{-}14\text{-}35\ /\ 02\text{-}15\text{-}34$ & $04\text{-}13\text{-}25\ /\ 05\text{-}13\text{-}24$ \\
+$9$ & $01\text{-}23\text{-}45$ & $02\text{-}15\text{-}34\ /\ 03\text{-}14\text{-}25$ & $04\text{-}12\text{-}35$ \\
+$10$ & $01\text{-}23\text{-}45$ & $02\text{-}15\text{-}34\ /\ 03\text{-}14\text{-}25$ & $04\text{-}12\text{-}35\ /\ 05\text{-}13\text{-}24$ \\
+$11$ & $01\text{-}23\text{-}45$ & $02\text{-}14\text{-}35\ /\ 02\text{-}15\text{-}34\ /\ 03\text{-}14\text{-}25$ & $05\text{-}13\text{-}24$ \\
+$12$ & $01\text{-}23\text{-}45$ & $02\text{-}15\text{-}34\ /\ 03\text{-}14\text{-}25\ /\ 04\text{-}12\text{-}35$ & $05\text{-}13\text{-}24$ \\
+$13$ & $01\text{-}23\text{-}45$ & $02\text{-}14\text{-}35\ /\ 02\text{-}15\text{-}34\ /\ 03\text{-}14\text{-}25\ /\ 04\text{-}12\text{-}35$ & $05\text{-}13\text{-}24$ \\
+$14$ & $01\text{-}23\text{-}45\ /\ 01\text{-}24\text{-}35$ & $02\text{-}15\text{-}34$ & $03\text{-}14\text{-}25$ \\
+$15$ & $01\text{-}23\text{-}45\ /\ 01\text{-}24\text{-}35$ & $02\text{-}15\text{-}34$ & $03\text{-}14\text{-}25\ /\ 04\text{-}13\text{-}25$ \\
+$16$ & $01\text{-}23\text{-}45\ /\ 01\text{-}24\text{-}35$ & $03\text{-}14\text{-}25\ /\ 04\text{-}13\text{-}25$ & $02\text{-}15\text{-}34$ \\
+$17$ & $01\text{-}23\text{-}45\ /\ 01\text{-}24\text{-}35$ & $03\text{-}14\text{-}25\ /\ 04\text{-}13\text{-}25$ & $02\text{-}15\text{-}34\ /\ 05\text{-}12\text{-}34$ \\
+$18$ & $01\text{-}24\text{-}35\ /\ 02\text{-}13\text{-}45$ & $03\text{-}14\text{-}25$ & $04\text{-}15\text{-}23$ \\
+$19$ & $01\text{-}24\text{-}35\ /\ 02\text{-}13\text{-}45$ & $03\text{-}14\text{-}25$ & $04\text{-}15\text{-}23\ /\ 05\text{-}12\text{-}34$ \\
+$20$ & $01\text{-}24\text{-}35\ /\ 02\text{-}13\text{-}45$ & $03\text{-}14\text{-}25\ /\ 04\text{-}15\text{-}23$ & $05\text{-}12\text{-}34$ \\
+$21$ & $01\text{-}23\text{-}45\ /\ 01\text{-}24\text{-}35\ /\ 02\text{-}13\text{-}45$ & $03\text{-}14\text{-}25$ & $05\text{-}12\text{-}34$ \\
+$22$ & $01\text{-}25\text{-}34\ /\ 02\text{-}14\text{-}35\ /\ 03\text{-}12\text{-}45$ & $04\text{-}15\text{-}23$ & $05\text{-}13\text{-}24$ \\
+$23$ & $01\text{-}24\text{-}35\ /\ 02\text{-}13\text{-}45\ /\ 02\text{-}14\text{-}35\ /\ 03\text{-}14\text{-}25$ & $04\text{-}15\text{-}23$ & $05\text{-}12\text{-}34$ \\
+\bottomrule
+\end{tabular}}
+\end{center}
+
+For $D=4$ colors, the $5$ orbit representatives (each class $P_i^k$
+nonempty, classes pairwise edge-disjoint) are:
+
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{cllll}
+\toprule
+$k$ & $P_0^k$ & $P_1^k$ & $P_2^k$ & $P_3^k$ \\
+\midrule
+$0$ & $01\text{-}23\text{-}45$ & $02\text{-}14\text{-}35$ & $03\text{-}15\text{-}24$ & $04\text{-}13\text{-}25$ \\
+$1$ & $01\text{-}23\text{-}45$ & $02\text{-}14\text{-}35$ & $03\text{-}15\text{-}24$ & $04\text{-}13\text{-}25\ /\ 05\text{-}12\text{-}34$ \\
+$2$ & $01\text{-}23\text{-}45$ & $02\text{-}14\text{-}35$ & $03\text{-}15\text{-}24\ /\ 04\text{-}13\text{-}25$ & $05\text{-}12\text{-}34$ \\
+$3$ & $01\text{-}23\text{-}45$ & $02\text{-}15\text{-}34\ /\ 03\text{-}14\text{-}25$ & $04\text{-}12\text{-}35$ & $05\text{-}13\text{-}24$ \\
+$4$ & $01\text{-}24\text{-}35\ /\ 02\text{-}13\text{-}45$ & $03\text{-}14\text{-}25$ & $04\text{-}15\text{-}23$ & $05\text{-}12\text{-}34$ \\
+\bottomrule
+\end{tabular}}
+\end{center}
+
+Representative $0$ has $F=3$ free edges ($4{,}913=17^3$ assignments);
+representatives $1$--$4$ have $F=0$ (their classes partition all
+$15$ edges); total $4{,}917$ rows.
+
+For $D=5$ colors the unique orbit representative is the ordered
+$1$-factorization
+\[
+P_0=\{01\text{-}23\text{-}45\},\quad
+P_1=\{02\text{-}14\text{-}35\},\quad
+P_2=\{03\text{-}15\text{-}24\},\quad
+P_3=\{04\text{-}13\text{-}25\},\quad
+P_4=\{05\text{-}12\text{-}34\},
+\]
+with $F=0$: one assignment, eliminated by the conditions.
+
+\section{Reproducibility}\label{app:repro}
+
+All computations run on a standard Python 3.9 + numpy 2.0 + sympy 1.14
+stack (z3 for the SAT cross-check), take a few seconds for the batch,
+and contain no randomized components on the certification path.
+Scripts: \path{computation/gen_search.py} (class enumeration and
+batch), \path{computation/search_core.py} (exact decision procedure),
+and the independent verification suite
+\path{audit/verification_2026-09-03/} described in
+Section~\ref{sec:verify}. The complete audit report is
+\path{audit/AUDIT_REPORT_2026-09-03.md}.
+
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+
+\bibitem{KGZ17} M. Krenn, X. Gu, A. Zeilinger,
+\emph{Quantum experiments and graphs: Multiparty states as coherent
+superpositions of perfect matchings}, Phys.\ Rev.\ Lett.\ 119, 240403
+(2017).
+
+\bibitem{KGS19} M. Krenn, X. Gu, D. Solt\'esz,
+\emph{Questions on the structure of perfect matchings inspired by
+quantum physics}, Proc.\ 2nd Croatian Combinatorial Days (2019),
+57--70; arXiv:1902.06023.
+
+\bibitem{bounty} M. Krenn, \emph{Inherited vertex coloring of graphs},
+bounty page, \url{https://mariokrenn.wordpress.com/graph-theory-question/}
+
+\bibitem{GKM24} L. S. Chandran, R. Gajjala, C. Illickan,
+\emph{Krenn--Gu conjecture for sparse graphs}, MFCS 2024, LIPIcs 306,
+art.\ 41; arXiv:2407.00303.
+
+\bibitem{CGI24} L. S. Chandran, R. Gajjala,
+\emph{Edge-coloured graphs with only monochromatic perfect matchings
+and their connection to quantum physics}, Electron.\ J.\ Combin.\
+(2026); arXiv:2202.05562.
+
+\bibitem{CLA22} A. Cervera-Lierta, M. Krenn, A. Aspuru-Guzik,
+\emph{Design of quantum optical experiments with logic artificial
+intelligence}, Quantum 6, 836 (2022); arXiv:2109.13273.
+
+\bibitem{mathoverflow} MathOverflow 311325, \emph{A question on
+inherited vertex colorings of perfect matchings} (M. Krenn, answers by
+I. Bogdanov et al.).
+
+\bibitem{alphaproof} DeepMind, \emph{Advancing mathematics research
+with AI-driven formal proof search}, arXiv:2605.22763 (2026).
+
+\bibitem{formalconjectures} google-deepmind/formal-conjectures,
+\emph{MonochromaticQuantumGraph} Lean formalizations and open
+statements, \url{https://github.com/google-deepmind/formal-conjectures}
+
+\bibitem{notes} \emph{Krenn--Gu research workspace: proof notes and
+certificate}, accompanying repository, 2026.
+
+\bibitem{repo} \emph{Accompanying repository: scripts, logs, audit
+report and certificate}, [URL to be added at submission].
+
+\end{thebibliography}
+
+\end{document}

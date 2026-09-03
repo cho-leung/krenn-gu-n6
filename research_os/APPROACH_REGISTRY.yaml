@@ -1,0 +1,148 @@
+# Approach registry — every materially distinct route, incl. tombstones.
+# Statuses: ACTIVE | PARTIAL | BLOCKED | FAILED | SUPERSEDED | COMPLETE
+# Verified: 2026-08-27 (KG-P0).
+
+approaches:
+  - id: A-001
+    target: "Prove conjecture via vertex-cut reductions (κ ≤ 2, then κ ≤ 3)."
+    core_mechanism: "Split along small vertex cuts; rebuild a smaller graph with
+      μ preserved or increased (parity bookkeeping on cut sides)."
+    source: "arXiv:2407.00303 (Thm 9, Thm 10), MFCS 2024"
+    strongest_result: "Conjecture for κ ≤ 2; minimal counterexample 4-connected."
+    status: BLOCKED
+    blocker: "Reduction requires κ ≤ 3; a κ = 4 analogue would leave the base
+      case n=6 open anyway (4-connected 6-vertex graphs exist)."
+    reopen_only_if: "A κ = 4 (or general-κ) reduction appears."
+    artifact: sources (see SOURCE_INDEX.md)
+
+  - id: A-002
+    target: "Degree-condition attack: Δ ≤ 3, then min-degree arguments."
+    core_mechanism: "Local discharging / reconstruction around degree-≤3
+      vertices; contraction of forced local structures."
+    source: "arXiv:2407.00303 (Thm 11, Thm 12, Cor 28/29)"
+    strongest_result: "Conjecture true for Δ ≤ 3; δ ≥ 3 ⇒ μ ≤ 3."
+    status: PARTIAL
+    blocker: "Gap between μ ≤ 3 (δ ≥ 3) and μ ≤ 2 (the conjecture); Δ = 4
+      graphs untouched."
+    reopen_only_if: "Δ = 4 case becomes tractable."
+    artifact: sources
+
+  - id: A-003
+    target: "Structural characterization: forbid μ ≥ 3 substructures."
+    core_mechanism: "Use the complete μ=1/μ=2 characterization to extract a
+      minimal forbidden configuration for μ ≥ 3, then rule it out in
+      4-connected graphs."
+    source: "Chandran–Gajjala, EJC 33(3) #P3.21 (2026); arXiv:2202.05562"
+    strongest_result: "Full μ ∈ {1,2} characterization + μ algorithm."
+    status: ACTIVE
+    blocker: "No published μ ≥ 3 structure theorem."
+    reopen_only_if: "— (active route; strongest current proof-side lever)."
+    artifact: sources
+
+  - id: A-004
+    target: "Positivity restriction (Bogdanov)."
+    core_mechanism: "Sign-of-permanent arguments force d ≤ 2 for positive
+      weights."
+    source: "MO 311325 answer; Thm 7 in arXiv:2407.00303; Lean ℝ≥0 statements"
+    strongest_result: "Complete characterization (C_{2n}, K₄) under positive
+      reals."
+    status: COMPLETE
+    blocker: "Does not extend to complex weights; a 'positivization' lemma
+      (every ℂ-solution ⇒ positive-real solution) would settle the conjecture
+      but is unknown."
+    reopen_only_if: "Positivization idea is revived."
+    artifact: sources
+
+  - id: A-005
+    target: "Weight-free SAT encoding of edge colorings (Klaus)."
+    core_mechanism: "Boolean clauses for existence of d monochromatic PMs with
+      distinct colors; UNSAT ⇒ no weighted solution in the mono-edge setting."
+    source: "Cervera-Lierta–Krenn–Aspuru-Guzik, Quantum 6, 836 (2022)"
+    strongest_result: "UNSAT for (6,≥3),(8,≥4), monochromatic edges only."
+    status: BLOCKED
+    blocker: "Encoding ignores weights (authors' caveat: K=True ≠ existence);
+      bichromatic edges break the PM↔coloring correspondence; no certificates."
+    reopen_only_if: "A weight-aware bichromatic encoding is designed."
+    artifact: sources
+
+  - id: A-006
+    target: "Gröbner elimination for fixed (n,d)."
+    core_mechanism: "Symbolic UNSAT of the polynomial system over ℂ via
+      Gröbner bases."
+    source: "Kevin M. / Mantey (n=4); Thm 8 in arXiv:2407.00303"
+    strongest_result: "n=4, d≥4 impossible; μ(K₄)=3 (54 variables, 81
+      equations reported)."
+    status: COMPLETE
+    blocker: "Never independently re-run; does not scale naively to (6,3)."
+    reopen_only_if: "Independent re-verification, or extension to (6,3) with
+      symmetry reduction."
+    artifact: computation/ (empty — no local artifact yet)
+
+  - id: A-007
+    target: "Tutte-theorem CNF encodings (PMVC)."
+    core_mechanism: "Tutte-condition CNF for FORALL-PMVC; Kissat/Clasp/QBF."
+    source: "Vardi–Zhang, IJCAI 2023; arXiv:2209.13063"
+    strongest_result: "Complexity landscape of PMVC; benchmarks to n=70."
+    status: SUPERSEDED
+    blocker: "Targets PMVC (a different problem); zero leverage on the
+      conjecture found."
+    reopen_only_if: "An encoding of the IVC equation system via Tutte-type
+      constraints is proposed."
+    artifact: sources
+
+  - id: A-008
+    target: "Discharging upper bound d ≤ n−2 (mono-edge simple graphs)."
+    core_mechanism: "Kostochka–Yancey-style discharging."
+    source: "Ravsky (via Kostochka–Yancey); cited in Quantum 8, 1396"
+    strongest_result: "d ≤ n−2 for simple graphs, monochromatic edges, even
+      n ≥ 6."
+    status: BLOCKED
+    blocker: "Bichromatic edges and multiedges break the argument; a general
+      'D ≤ N−2' claim is refuted outright by K₄ (D=3 > 2 = N−2)."
+    reopen_only_if: "A multigraph/bichromatic discharging variant appears."
+    artifact: sources
+
+  - id: A-009
+    target: "Tensor-algebraic no-go for high-dimensional GHZ."
+    core_mechanism: "Linear-algebra/tensor contraction identities over the
+      pmSum equation system (no_witness_general lemma pattern)."
+    source: "arXiv:2605.22763 + Lean formal-conjectures (DeepMind); companion
+      paper 'in preparation' (ref [38])"
+    strongest_result: "D=N impossible for even N ≥ 4 over ℂ; (8,10) case too."
+    status: PARTIAL
+    blocker: "Only D=N (and listed fixed cases); D ∈ {3,…,N−1} open; companion
+      paper unpublished."
+    reopen_only_if: "Companion paper appears or method extends to D ≥ 3."
+    artifact: sources
+
+  - id: A-010
+    target: "Lean formalization of the whole problem."
+    core_mechanism: "Machine-checked statements for all (n,d) cases; witnesses
+      and no-go theorems over ℂ, ℝ, ℤ, trinary ℤ."
+    source: "google-deepmind/formal-conjectures (issue #2205, M. Krenn);
+      arXiv:2605.22763"
+    strongest_result: "34 open statements + 11 solved + 3 witnesses, all
+      formally stated."
+    status: ACTIVE
+    blocker: "Core statements still open (`sorry`)."
+    reopen_only_if: "—"
+    artifact: sources
+
+  - id: A-011
+    target: "RESOLVED for the simple case by a different route (2026-08-29):
+      exhaustive class enumeration + batch elimination via
+      computation/gen_search.py; certificate proof/certificate_simple63.md;
+      independent audit audit/AUDIT_REPORT_2026-09-03.md (PASS). The SMT/
+      Gröbner route below remains available for multigraph (6,3) and n>=8."
+    status: "SUPERSEDED (simple case); AVAILABLE (multigraph, n>=8)"
+    core_mechanism: "SMT (nonlinear real arithmetic) + Gröbner/CAD on skeleton
+      candidates {K₆, octahedron, K₆−3K₂} and small multigraph variants;
+      symmetry breaking (S₆, color renaming); first pass on trinary-ℤ and
+      roots-of-unity weights; exact-arithmetic verification of any witness;
+      LRAT/Lean or algebraic certificate for UNSAT."
+    source: "this project (planned)"
+    strongest_result: "none yet"
+    status: ACTIVE
+    blocker: "Awaiting authorization (READY != AUTHORIZED)."
+    reopen_only_if: "—"
+    artifact: counterexample/ computation/ (planned)

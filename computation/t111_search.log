@@ -1,0 +1,4 @@
+t111: 2 canonical triple reps
+rep 0/2 done rows=1000000 surv=0 feas=0 t=3s
+rep 1/2 done rows=2000000 surv=0 feas=0 t=3s
+t111 done: rows=2000000 survivors=0 feasible=0 t=3s

@@ -1,0 +1,157 @@
+# Claim ledger — every load-bearing claim with provenance.
+# Statuses: PROVED_IN_PEER_REVIEWED_SOURCE | PREPRINT_CLAIM | REPRODUCED |
+#           COMPUTATIONALLY_CERTIFIED | CLAIMED_BUT_UNVERIFIED | UNKNOWN
+# Verified: 2026-08-27 (KG-P0).
+
+claims:
+  - id: CL-001
+    claim: "With all edge weights positive real, the only monochromatic graphs
+      are even cycles C_{2n} (d=2) and K_4 (d=3)."
+    scope: positive real weights; all even n
+    source: "Ilya Bogdanov, MathOverflow 311325 answer (2017); restated as
+      Theorem 7 in arXiv:2407.00303 (MFCS 2024)"
+    status: PROVED_IN_PEER_REVIEWED_SOURCE
+    notes: "Original medium is a MO answer; the result is adopted as a theorem
+      in the peer-reviewed MFCS 2024 paper and Lean-formalized (ℝ≥0 statements
+      in google-deepmind/formal-conjectures)."
+
+  - id: CL-002
+    claim: "μ(K_4) = 3, and no 4-vertex graph achieves d ≥ 4 (full setting)."
+    scope: n=4, multigraphs, complex weights
+    source: "Gröbner-basis computation by Kevin M. (bafflingbits) / 'Mantey's
+      four-vertex result' = Theorem 8 of arXiv:2407.00303"
+    status: COMPUTATIONALLY_CERTIFIED
+    notes: "Single implementation; never independently re-run (Krenn, Zulip
+      Feb 2026: 'he never verified it'). The (4,3) witness and (4,≥4) no-go
+      are additionally machine-checked in Lean (DeepMind formal-conjectures)."
+
+  - id: CL-003
+    claim: "κ(G) ≤ 2 ⇒ μ(G) ≤ 2 (conjecture holds for connectivity ≤ 2)."
+    scope: full setting (multigraphs, complex weights)
+    source: "Theorem 9, arXiv:2407.00303, MFCS 2024 LIPIcs 306:41"
+    status: PROVED_IN_PEER_REVIEWED_SOURCE
+
+  - id: CL-004
+    claim: "For κ(G) ≤ 3 and |V(G)| > 4 there is G' with |V(G')| ≤ |V(G)|−2 and
+      μ(G') ≥ μ(G); hence any minimal counterexample is 4-connected."
+    scope: full setting
+    source: "Theorem 10 / §1.3, arXiv:2407.00303, MFCS 2024"
+    status: PROVED_IN_PEER_REVIEWED_SOURCE
+
+  - id: CL-005
+    claim: "Conjecture holds for all graphs of maximum degree ≤ 3 (cubic and
+      subcubic graphs)."
+    scope: full setting
+    source: "Theorem 11 / Corollary 29, arXiv:2407.00303, MFCS 2024"
+    status: PROVED_IN_PEER_REVIEWED_SOURCE
+
+  - id: CL-006
+    claim: "Minimum degree 3 ⇒ μ(G) ≤ 3."
+    scope: full setting
+    source: "Theorem 12 / Corollary 28, arXiv:2407.00303, MFCS 2024"
+    status: PROVED_IN_PEER_REVIEWED_SOURCE
+
+  - id: CL-007
+    claim: "Complete characterization of graphs with μ(G)=1 and μ(G)=2, and a
+      polynomial-time algorithm computing μ(G)."
+    scope: full setting
+    source: "Chandran–Gajjala, Electronic J. Combinatorics 33(3) #P3.21 (2026);
+      arXiv:2202.05562 (v2 2023-11-20)"
+    status: PROVED_IN_PEER_REVIEWED_SOURCE
+
+  - id: CL-008
+    claim: "No simple graph on n > 4 vertices has dimension ≥ n/√2."
+    scope: simple graphs only; bichromatic edges + complex weights allowed
+    source: "Chandran–Gajjala, Quantum 8, 1396 (2024); arXiv:2304.06407"
+    status: PROVED_IN_PEER_REVIEWED_SOURCE
+    notes: "Does not reach d=3 for n < 10; leaves (6,3),(8,3) open even for
+      simple graphs."
+
+  - id: CL-009
+    claim: "Simple graphs, monochromatic edges only: no monochromatic graph for
+      d > n−2 (even n ≥ 6)."
+    scope: simple graphs, monochromatic edges
+    source: "Ravsky via Kostochka–Yancey; recorded on Krenn's page (Feb 2022)
+      and cited as established in Quantum 8, 1396"
+    status: PROVED_IN_PEER_REVIEWED_SOURCE
+    notes: "Original standalone write-up NOT located (provenance caveat:
+      citation-mediated verification only)."
+
+  - id: CL-010
+    claim: "Monochromatic edges only: (n=6, d≥3) and (n=8, d≥4) impossible."
+    scope: simple graphs, monochromatic edges; weight-free encoding
+    source: "Cervera-Lierta, Krenn, Aspuru-Guzik, Quantum 6, 836 (2022);
+      arXiv:2109.13273 (MiniSAT, 'Klaus' pipeline)"
+    status: COMPUTATIONALLY_CERTIFIED
+    notes: "Weak certificate: bare solver verdict, no LRAT/DRAT. Authors' own
+      caveat: clauses encode edge-color feasibility only — K=True does not
+      imply a weighted solution exists. Does not touch bichromatic/multigraph
+      setting."
+
+  - id: CL-011
+    claim: "No monochromatic quantum graph with D = N exists for even N ≥ 4
+      over ℂ; solved fixed cases (4,4),(4,≥4),(6,6),(8,10),(10,10);
+      witnesses (4,2),(4,3),(6,2)."
+    scope: full equation system over ℂ (fixed N,D)
+    source: "arXiv:2605.22763 (AlphaProof Nexus, 2026-05-21) +
+      google-deepmind/formal-conjectures + /alphaproof-nexus-results (Lean)"
+    status: COMPUTATIONALLY_CERTIFIED
+    notes: "Machine-checked Lean proofs; NOT peer-reviewed. Public repo bodies
+      carry `sorry` with proof links into DeepMind forks. Authors' caveats:
+      sorry-offloading into helper lemmas; hallucinated-citation sketches;
+      statement faithfulness validated by team experts. STRICTLY WEAKER than
+      the conjecture (D=N only; D∈{3,..,N−1} open)."
+
+  - id: CL-012
+    claim: "Blog phrasing: 'no monochromatic quantum graph can exist with
+      d ≥ n (for any even n)' (Krenn page, May 2026 / 2026-07-23)."
+    scope: as stated
+    source: https://mariokrenn.wordpress.com/graph-theory-question/
+    status: CLAIMED_BUT_UNVERIFIED
+    notes: "The formal theorems establish D=n (even n≥4) and D≥4 (n=4); d>n
+      for n≥6 is not covered by any formal statement found. Phrasing gap
+      between blog and Lean repo — flag to any external reader."
+
+  - id: CL-013
+    claim: "'A Tensor-Algebraic No-Go Theorem for High-Dimensional Photonic
+      GHZ States' (Krenn, Firsching, Tsoukalas, Gajjala, Gu, Chaudhuri)."
+    scope: unknown (unpublished)
+    source: "Ref. [38] 'in preparation' in arXiv:2605.22763"
+    status: UNKNOWN
+    notes: "No preprint found as of 2026-08-27. WATCH."
+
+  - id: CL-014
+    claim: "PMVC (perfect matching under vertex-color constraints) complexity:
+      EXISTS-PMVC-DD NP-hard for ≥2 colors; symmetric variant ≃ Exact Perfect
+      Matching (RNC; PTIME on planar graphs); Tutte-based CNF encoding for
+      FORALL-PMVC."
+    scope: different problem (PMVC), NOT the conjecture
+    source: "Vardi–Zhang, arXiv:2209.13063; IJCAI 2023 (arXiv:2301.09833)"
+    status: PROVED_IN_PEER_REVIEWED_SOURCE
+    notes: "Misattribution flag: the 'SAT proved n=6 max d=2, n=8 max d≤3'
+      result belongs to Cervera-Lierta et al. (CL-010), not Vardi–Zhang.
+      No public Vardi–Zhang code repo found."
+
+  - id: CL-015
+    claim: "THE Krenn–Gu conjecture: even n ≥ 6, d ≥ 3 ⇒ no monochromatic
+      graph (equivalently μ(G) ≤ 2 for |V(G)| > 4)."
+    scope: full setting
+    source: "Question 1, arXiv:1902.06023; Conjecture 6, arXiv:2407.00303"
+    status: UNKNOWN
+    notes: "OPEN as of 2026-08-27. Smallest open instance: (6,3) over ℂ."
+
+  - id: CL-016
+    claim: "Bounty status: €3,000 OPEN, unclaimed."
+    scope: metadata
+    source: "mariokrenn.wordpress.com/graph-theory-question/ (modified
+      2026-07-23); graph-conjectures mirror (auto-reviewed 2026-05-08)"
+    status: PROVED_IN_PEER_REVIEWED_SOURCE
+    notes: "Metadata, not a mathematical claim. Acceptance: peer-reviewed
+      journal, or software-verifiable counterexample; no deadline."
+
+  - id: CL-017
+    claim: "W-state graphs: no simple W-state graph; recognition algorithm;
+      Dicke-state condition coNP-complete (resolves Vardi–Zhang open problem)."
+    scope: related parameter (W/Dicke states), not the conjecture
+    source: "Gajjala–Ray–Thilikos, arXiv:2605.04855 (2026-05-06, preprint)"
+    status: PREPRINT_CLAIM

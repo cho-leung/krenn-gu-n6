@@ -1,0 +1,4 @@
+loaded 24 canonical orbit reps from cache
+rep 0/24 surv=0 feas=0 {} t=1s
+rep 20/24 surv=0 feas=0 {} t=2s
+done: reps=24 survivors=0 feasible=0 {} t=2s

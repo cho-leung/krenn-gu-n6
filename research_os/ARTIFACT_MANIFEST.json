@@ -1,0 +1,66 @@
+{
+  "project": "Krenn-Gu",
+  "created": "2026-08-27",
+  "artifacts": [
+    {
+      "path": "CLAUDE.md",
+      "role": "compact project instructions / Research OS rules",
+      "status": "final"
+    },
+    {
+      "path": "research_os/RESEARCH_STATE.md",
+      "role": "canonical snapshot: frozen problem, bounty, frontier, dependency graph, KG-P1 proposal",
+      "status": "final"
+    },
+    {
+      "path": "research_os/CLAIM_LEDGER.yaml",
+      "role": "provenance-classified claim ledger (CL-001..CL-017)",
+      "status": "final"
+    },
+    {
+      "path": "research_os/APPROACH_REGISTRY.yaml",
+      "role": "approach registry with tombstones (A-001..A-011)",
+      "status": "final"
+    },
+    {
+      "path": "research_os/GATES.yaml",
+      "role": "KG-0..KG-4 gate statuses and evidence pointers",
+      "status": "final"
+    },
+    {
+      "path": "research_os/ARTIFACT_MANIFEST.json",
+      "role": "this manifest",
+      "status": "final"
+    },
+    {
+      "path": "sources/SOURCE_INDEX.md",
+      "role": "primary-source URL index with roles",
+      "status": "final"
+    },
+    {
+      "path": "proof/",
+      "role": "proof artifacts — empty (KG-P0 produced none)",
+      "status": "empty"
+    },
+    {
+      "path": "counterexample/",
+      "role": "counterexample artifacts — empty",
+      "status": "empty"
+    },
+    {
+      "path": "computation/",
+      "role": "computational artifacts (encodings, certificates) — empty",
+      "status": "empty"
+    },
+    {
+      "path": "audit/",
+      "role": "audit records — empty",
+      "status": "empty"
+    },
+    {
+      "path": "archive/",
+      "role": "archived material — empty",
+      "status": "empty"
+    }
+  ]
+}
