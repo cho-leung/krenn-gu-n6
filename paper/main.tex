@@ -13,8 +13,8 @@
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 
-\title{The Krenn--Gu conjecture holds for all simple graphs\\[0.3em]
-on six vertices}
+\title{A finite certificate for the simple six-vertex\\[0.3em]
+Krenn--Gu obstruction over arbitrary integral domains}
 \author{Junhao Liang\\[0.4em]
 Zhejiang Normal University\\[0.2em]
 \url{mailto:JunhaoLiang2005@gmail.com}}
@@ -24,32 +24,30 @@ Zhejiang Normal University\\[0.2em]
 \maketitle
 
 \begin{abstract}
-We prove that for \emph{every} number of colors $D\ge 3$ there is no
-bi-colored weighted \emph{simple} graph on $6$ vertices --- bichromatic
-edges and complex weights allowed --- in which all $D$ monochromatic
-inherited vertex colorings have unit weight while every other vertex
-coloring has weight zero. Equivalently, the matching index of every
-simple graph on $6$ vertices is at most $2$; $K_4$ (with $\mu=3$)
-remains the only known exception to $\mu(G)\le 2$ at this order. For
-$D=3,4,5$ the proof reduces the statement to a purely combinatorial
-finite search: a complete enumeration of the $5{,}610$, $2{,}160$ and
-$720$ possible monochromatic-class configurations respectively,
-collapsed to $24$, $5$ and $1$ orbit representatives under the symmetric
-group $S_6$, followed by an exhaustive check of all $2{,}033{,}610$,
-$4{,}917$ and $1$ edge-color assignments --- every one of which is
-eliminated by one of two elementary necessary conditions; for $D\ge 6$
-the statement follows from a one-line edge-counting argument
-($3D\le 15$). Because the elimination is weight-free, the result holds
-over any integral domain, in particular over $\mathbb C$, $\mathbb R$,
-$\mathbb Z$, and for weights in $\{-1,0,1\}$. The certificate is
-machine-reproducible (seconds of computation), has been independently
-re-verified by fresh implementations and by an independent SAT encoding,
-and settles the open statements
-\texttt{eqSystem6\_no\_solution\_d3}, \texttt{\_d4}, \texttt{\_d5} and
-\texttt{\_ge3} (with their \texttt{\_real}, \texttt{\_int},
-\texttt{\_trinary\_int} variants where present) in the DeepMind
-\emph{formal-conjectures} benchmark. The full conjecture (arbitrary
-$n\ge 8$, multigraphs) remains open.
+We give a finite, weight-free certificate for the \emph{simple}
+six-vertex case of the Krenn--Gu obstruction: for every number of
+colors $D\ge 3$ there is no bi-colored weighted \emph{simple} graph on
+$6$ vertices --- at most one edge per unordered pair, one ordered
+endpoint-color pair per edge, bichromatic edges allowed --- in which
+all $D$ monochromatic inherited vertex colorings have unit weight while
+every other vertex coloring has weight zero. For $D=3,4,5$ the proof
+reduces the statement to a purely combinatorial finite search: a
+complete enumeration of the $5{,}610$, $2{,}160$ and $720$ possible
+monochromatic-class configurations respectively, collapsed to $24$,
+$5$ and $1$ orbit representatives under the symmetric group $S_6$,
+followed by an exhaustive check of all $2{,}033{,}610$, $4{,}917$ and
+$1$ edge-color assignments --- every one of which is eliminated by one
+of two elementary necessary conditions; for $D\ge 6$ the statement
+follows from a one-line edge-counting argument ($3D\le 15$). Because
+the elimination is weight-free, the result holds over any integral
+domain, in particular over $\mathbb C$, $\mathbb R$, $\mathbb Z$, and
+for weights in $\{-1,0,1\}$. To our knowledge, the $D=3$ obstruction in
+this simple six-vertex model has not previously been established over
+arbitrary integral domains. The certificate is machine-reproducible
+(seconds of computation) and has been independently re-verified by
+fresh implementations and by an independent SAT encoding. The
+unrestricted EqSystemN benchmark uses a broader model and is outside
+the scope of this certificate.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -77,14 +75,25 @@ counterexample forced to be $4$-connected \cite{CGI24}. For
 \emph{simple} graphs, the strongest general bound is
 $\mu(G)\le n/\sqrt{2}$ (Theorem~22 of \cite{CG24}); at $n=6$ this yields
 only $\mu(G)\le 4$, since $\mu$ is integral, whereas the present paper
-proves $\mu(G)\le 2$. Over
+shows that in the simple model the maximum dimension at $n=6$ is at
+most $2$, the conjectured value. Over
 \emph{nonnegative} real weights the conjecture is fully settled
-(Bogdanov, see \cite{mathoverflow}), and the DeepMind formal-conjectures
-benchmark records the general case as open, with only the $D=N$ cases
-resolved formally \cite{alphaproof, formalconjectures}.
+(Bogdanov, see \cite{mathoverflow}). The DeepMind formal-conjectures
+benchmark records formal statements for the unrestricted
+equation-system model; several cases have recently received
+independent formal proofs, as discussed below
+\cite{alphaproof, formalconjectures}.
 
-In this note we resolve the case $n=6$ \emph{completely for simple
-graphs}: the conjecture holds for every number of colors $d\ge 3$.
+In this note we treat the case $n=6$ in the \emph{restricted simple
+model} for every number of colors $d\ge 3$; we make no claim about the
+unrestricted (multigraph) model. Recent formal work has resolved the
+unrestricted EqSystemN model for $n=6$, $D=3$ over $\mathbb C$
+\cite{kg63cert}; a public Lean proof establishes the all-even integer
+cases, including $n=6$, $D=3$ over $\mathbb Z$ \cite{kgallevenint}; and
+a sharp bound $D\le N-2$ over arbitrary integral domains for even
+$N\ge 6$ rules out $D\ge 5$ at $n=6$ \cite{kgsharpbound}. For $D=3$, we
+have found no public result establishing the corresponding simple
+six-vertex obstruction over arbitrary integral domains in full.
 Our main result is:
 
 \begin{theorem}\label{thm:main}
@@ -96,8 +105,9 @@ $\sigma=i^6$, $i\in\{0,\dots,D-1\}$, and $w(\sigma)=0$ for every other
 vertex coloring.
 \end{theorem}
 
-Consequently $\mu(G)\le 2$ for every simple graph $G$ on $6$ vertices
-(over any integral domain). Two features deserve emphasis:
+Consequently, in the simple model, no bi-colored graph on $6$ vertices
+admits a monochromatic configuration of dimension at least $3$ over any
+integral domain. Two features deserve emphasis:
 
 \begin{enumerate}[label=(\alph*)]
 \item The obstruction is \emph{purely combinatorial}: the necessary
@@ -110,11 +120,9 @@ and eliminated in seconds, with no reliance on symbolic or numeric
 solvers.
 \end{enumerate}
 
-The result settles the DeepMind formal-conjectures open statements
-\texttt{eqSystem6\_no\_solution\_d3}, \texttt{\_d4}, \texttt{\_d5} and
-the universal \texttt{\_ge3} family, with their
-\texttt{\_real}, \texttt{\_int} and \texttt{\_trinary\_int} variants
-where present (Section~\ref{sec:consequences}).
+The unrestricted EqSystemN model of the DeepMind
+\emph{formal-conjectures} benchmark is broader and is outside the scope
+of this note (Section~\ref{sec:consequences}).
 
 \section{Preliminaries}\label{sec:prelim}
 
@@ -409,38 +417,22 @@ condition (b) or (c).
 \section{Consequences for the formal-conjectures benchmark}
 \label{sec:consequences}
 
-The DeepMind \emph{formal-conjectures} benchmark
-\cite{formalconjectures, alphaproof} contains the open Lean statements
-$\neg\,\exists\,W:\mathrm{WeightsN}\,6\,D\ R,\
-\mathrm{EqSystemN}\,6\,D\ W$ for various color counts $D$ and
-coefficient domains $R$. Since Theorem~\ref{thm:main} holds over any
-integral domain, it settles the following $13$ statements currently
-recorded as open in the benchmark:
-\[
-\begin{gathered}
-\texttt{eqSystem6\_no\_solution\_d3},\quad
-\texttt{\_d3\_real},\quad
-\texttt{\_d3\_int},\quad
-\texttt{\_d3\_trinary\_int},\\
-\texttt{eqSystem6\_no\_solution\_d4},\quad
-\texttt{eqSystem6\_no\_solution\_d5},\quad
-\texttt{\_d5\_real},\quad
-\texttt{\_d5\_int},\quad
-\texttt{\_d5\_trinary\_int},\\
-\texttt{eqSystem6\_no\_solution\_ge3},\quad
-\texttt{\_ge3\_real},\quad
-\texttt{\_ge3\_int},\quad
-\texttt{\_ge3\_trinary\_int}.
-\end{gathered}
-\]
-(The benchmark also records \texttt{eqSystem6\_no\_solution\_d6} as
-solved; it follows elementarily from Lemma~\ref{lem:Dle5} as well.)
+The DeepMind \emph{formal-conjectures} benchmark encodes the
+unrestricted EqSystemN model, in which independent weights are
+available for the different endpoint-colour types. The theorem proved
+here concerns the simple-model restriction and therefore does not by
+itself settle the unrestricted benchmark declarations. Several
+coefficient-domain cases have recently received independent external
+formal proofs \cite{kg63cert, kgallevenint, kgsharpbound}; the present
+certificate should instead be viewed as a certificate for the
+simple-model restriction, which is the natural first target for a
+future Lean formalization of the enumeration presented here.
 
 \section{Conclusion and open problems}\label{sec:open}
 
-We have settled the Krenn--Gu conjecture for all simple graphs on $6$
-vertices and all color counts $D\ge 3$. The following directions
-remain:
+We have certified that in the simple model no six-vertex bi-colored
+graph admits a monochromatic configuration of dimension $D\ge 3$, over
+any integral domain. The following directions remain:
 
 \begin{enumerate}[label=(\roman*)]
 \item \emph{Multigraphs.} The conjecture allows parallel edges. The
@@ -454,8 +446,9 @@ exactly what fails to generalize naively; new ideas are needed.
 \item \emph{Formalization.} A Lean formalization of the three
 enumerations (the $24$-, $5$- and $1$-orbit searches and their
 $2{,}033{,}610$-, $4{,}917$- and $1$-row eliminations, executable under
-the Lean kernel) would turn the $13$ benchmark statements of
-Section~\ref{sec:consequences} into \texttt{answer(True)} entries.
+the Lean kernel) would certify the simple-model restriction computed
+here; the unrestricted benchmark statements of
+Section~\ref{sec:consequences} require a separate treatment.
 \end{enumerate}
 
 \begin{remark}[Relation to the prize]
@@ -607,6 +600,27 @@ with AI-driven formal proof search}, arXiv:2605.22763 (2026).
 \bibitem{formalconjectures} google-deepmind/formal-conjectures,
 \emph{MonochromaticQuantumGraph} Lean formalizations and open
 statements, \url{https://github.com/google-deepmind/formal-conjectures}
+
+\bibitem{kg63cert} google-deepmind/formal-conjectures, issue \#4609,
+\emph{Mark eqSystem6\_no\_solution\_d3 as solved via external Lean 4
+proof}
+\url{https://github.com/google-deepmind/formal-conjectures/issues/4609};
+external proof repository
+\url{https://github.com/algal/krenn-gu-6x3-certificate}, proof commit
+c04696e515e0c02be140353fb52ea60c62e827b1.
+
+\bibitem{kgallevenint} google-deepmind/formal-conjectures, PR \#4659,
+\emph{solve all-even integer cases}
+\url{https://github.com/google-deepmind/formal-conjectures/pull/4659}
+(public Lean proof: for even $N\ge 6$ and $D\ge 3$,
+$\neg\exists W:\mathrm{WeightsN}\,N\,D\,\mathbb Z,\
+\mathrm{EqSystemN}\,N\,D\,W$).
+
+\bibitem{kgsharpbound} \emph{Sharp color bound for monochromatic quantum
+graphs over arbitrary integral domains}, formal proof repository
+\url{https://github.com/KitaKen1/monochromatic-quantum-graph-sharp-bound-lean}
+(main result: over every integral domain, even $N\ge 6$, any EqSystemN
+solution satisfies $D\le N-2$).
 
 \bibitem{notes} \emph{Krenn--Gu research workspace: proof notes and
 certificate}, accompanying repository, 2026.
